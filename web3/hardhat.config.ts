@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import '@nomiclabs/hardhat-ethers';
 
-dotenv.config();
+dotenv.config({ path: `.env.local` });
 
 //* Notes for deploying the smart contract on your own subnet
 //* More info on subnets: https://docs.avax.network/subnets
