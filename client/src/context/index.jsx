@@ -79,7 +79,7 @@ export const GlobalContextProvider = ({ children }) => {
       setContract(newContract);
 
       updateCurrentWalletAddress();
-      //window.ethereum.on('accountsChanged', updateCurrentWalletAddress);
+      window.ethereum.on('accountsChanged', updateCurrentWalletAddress);
     }
 
     setSmartContractAndProvider();
@@ -154,6 +154,7 @@ export const GlobalContextProvider = ({ children }) => {
       battleGround, setBattleGround,
       errorMessage, setErrorMessage,
       player1Ref, player2Ref,
+      updateCurrentWalletAddress,
     }}>
       {children}
     </GlobalContext.Provider>
