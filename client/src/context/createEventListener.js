@@ -1,6 +1,10 @@
 import { ethers } from "ethers";
 
 import { ABI } from "../contract";
+import { playAudio, sparcle } from "../utils/animation";
+import { defenseSound } from "../assets";
+
+const emptyAccount = '0x0000000000000000000000000000000000000000';
 
 const AddNewEvent = (eventFilter, provider, cb) => {
   provider.removeListener(eventFilter);
@@ -12,7 +16,16 @@ const AddNewEvent = (eventFilter, provider, cb) => {
   })
 }
 
-export const createEventListeners = ({ navigate, contract, provider, walletAddress, setShowAlert, setUpdateGameData }) => {
+const getCoords = (cardRef) => {
+  const { left, top, width, height } = cardRef.current.getBoundingClientRect();
+
+  return {
+    pageX: left + width / 2,
+    pageY: top + height / 2.25,
+  }
+}
+
+export const createEventListeners = ({ navigate, contract, provider, walletAddress, setShowAlert, setUpdateGameData, player1Ref, player2Ref }) => {
   const NewPlayerEventFilter = contract.filters.NewPlayer();
 
   AddNewEvent(NewPlayerEventFilter, provider, ({ args }) => {
@@ -43,5 +56,25 @@ export const createEventListeners = ({ navigate, contract, provider, walletAddre
 
   AddNewEvent(BattleMoveEventFilter, provider, ({ args }) => {
     console.log('Battle move initiated!', args);
+  });
+
+  const RoundEndedEventFilter = contract.filters.RoundEnded();
+
+  AddNewEvent(RoundEndedEventFilter, provider, ({ args }) => {
+    console.log('Round ended!', args, walletAddress);
+
+    for (let i = 0; i < args.damagedPlayers.length; i++) {
+      if (args.damagedPlayers[i] !== emptyAccount) {
+        if (args.damagedPlayers[i] === walletAddress) {
+          sparcle(getCoords(player1Ref));
+        } else if (args.damagedPlayers[i] !== walletAddress) {
+          sparcle(getCoords(player2Ref));
+        }
+      } else {
+        playAudio(defenseSound);
+      }
+    }
+
+    setUpdateGameData((prevUpdateGameData) => prevUpdateGameData + 1);
   });
 }

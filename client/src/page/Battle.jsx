@@ -8,7 +8,7 @@ import { playAudio } from '../utils/animation';
 import styles from '../styles';
 
 const Battle = () => {
-  const { contract, gameData, walletAddress, showAlert, setShowAlert, battleGround, setErrorMessage } = useGlobalContext();
+  const { contract, gameData, walletAddress, showAlert, setShowAlert, battleGround, setErrorMessage, player1Ref, player2Ref } = useGlobalContext();
   const [player1, setPlayer1] = useState({});
   const [player2, setPlayer2] = useState({});
   const { battleName } = useParams();
@@ -42,14 +42,14 @@ const Battle = () => {
         setPlayer1({ ...player01, att: p1Att, def: p1Def, health: p1H, mana: p1M });
         setPlayer2({ ...player02, att: 'X', def: 'X', health: p2H, mana: p2M });
       } catch (error) {
-        console.log(error);
+        setErrorMessage(error);
       }
     }
 
     if (contract && gameData.activeBattle) getPlayerInfo();
   }, [contract, gameData, battleName]);
 
-  const makeMove = async (choice) => {
+  const makeAMove = async (choice) => {
     playAudio(choice === 1 ? attackSound : defenseSound);
 
     try {
@@ -75,25 +75,25 @@ const Battle = () => {
         <Card
           card={player2}
           title={player2?.playerName}
-          cardRef=''
+          cardRef={player2Ref}
           playerTwo
         />
 
         <div className="flex items-center flex-row">
           <ActionButton
             imgUrl={attack}
-            handleClick={() => makeMove(1)}
+            handleClick={() => makeAMove(1)}
             restStyles="mr-2 hover:border-yellow-400"
           />
           <Card
             card={player1}
             title={player1?.playerName}
-            cardRef=''
+            cardRef={player1Ref}
             restStyles="mt-3"
           />
           <ActionButton
             imgUrl={defense}
-            handleClick={() => makeMove(2)}
+            handleClick={() => makeAMove(2)}
             restStyles="ml-6 hover:border-red-600"
           />
         </div>

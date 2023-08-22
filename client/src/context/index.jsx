@@ -23,6 +23,9 @@ export const GlobalContextProvider = ({ children }) => {
   const [step, setStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const player1Ref = useRef();
+  const player2Ref = useRef();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,7 +79,7 @@ export const GlobalContextProvider = ({ children }) => {
       setContract(newContract);
 
       updateCurrentWalletAddress();
-      window.ethereum.on('accountsChanged', updateCurrentWalletAddress);
+      //window.ethereum.on('accountsChanged', updateCurrentWalletAddress);
     }
 
     setSmartContractAndProvider();
@@ -88,6 +91,7 @@ export const GlobalContextProvider = ({ children }) => {
         navigate, contract, provider,
         walletAddress, setShowAlert,
         setUpdateGameData,
+        player1Ref, player2Ref,
       })
     }
   }, [contract, step])
@@ -149,6 +153,7 @@ export const GlobalContextProvider = ({ children }) => {
       gameData,
       battleGround, setBattleGround,
       errorMessage, setErrorMessage,
+      player1Ref, player2Ref,
     }}>
       {children}
     </GlobalContext.Provider>
