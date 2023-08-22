@@ -64,6 +64,15 @@ const Battle = () => {
       setErrorMessage(error);
     }
   }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!gameData?.activeBattle?.battleStatus) navigate('/');
+    }, [2000]);
+
+    return () => clearTimeout(timer);
+  }, [gameData])
+  
   
   return (
     <div className={`${styles.flexBetween} ${styles.gameContainer} ${battleGround}`}>
