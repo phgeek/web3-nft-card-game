@@ -20,12 +20,12 @@ const CreateBattle = () => {
   
 
   const handleClick = async () => {
-    if (!battleName || !battleName.trim()) return null;
+    if (battleName === '' || battleName.trim() === '') return null;
 
     try {
       await contract.createBattle(battleName);
 
-      waitBattle(true);
+      setWaitBattle(true);
     } catch (error) {
       setErrorMessage(error);
     }
