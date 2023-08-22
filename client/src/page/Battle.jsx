@@ -48,6 +48,22 @@ const Battle = () => {
 
     if (contract && gameData.activeBattle) getPlayerInfo();
   }, [contract, gameData, battleName]);
+
+  const makeMove = async (choice) => {
+    playAudio(choice === 1 ? attackSound : defenseSound);
+
+    try {
+      await contract.attackOrDefendChoice(choice, battleName);
+
+      setShowAlert({
+        status: true,
+        type: 'info',
+        message: `Initiating ${choice === 1 ? 'attack' : 'defense'}`
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
   return (
     <div className={`${styles.flexBetween} ${styles.gameContainer} ${battleGround}`}>
@@ -66,7 +82,7 @@ const Battle = () => {
         <div className="flex items-center flex-row">
           <ActionButton
             imgUrl={attack}
-            handleClick={() => {}}
+            handleClick={() => makeMove(1)}
             restStyles="mr-2 hover:border-yellow-400"
           />
           <Card
@@ -77,7 +93,7 @@ const Battle = () => {
           />
           <ActionButton
             imgUrl={defense}
-            handleClick={() => {}}
+            handleClick={() => makeMove(2)}
             restStyles="ml-6 hover:border-red-600"
           />
         </div>
